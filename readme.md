@@ -29,3 +29,9 @@ The server folder contains a node.js server using [express](https://expressjs.co
 The application should connect to the default server port (3042) automatically! 
 
 _Hint_ - Use [nodemon](https://www.npmjs.com/package/nodemon) instead of `node` to automatically restart the server on any changes.
+
+### Usage
+
+The notes.txt file contains account info for 4 accounts already loaded on the server
+
+There is a script in server/scripts called sign.js that can be used to generate the signature needed to complete a transaction

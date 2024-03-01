@@ -38,11 +38,13 @@ app.post("/send", (req, res) => {
 
   setInitialBalance(senderAddress);
   setInitialBalance(recipientAddress);
-
+  
 
   if (secp.secp256k1.verify({'r': BigInt(r), 's': BigInt(s)}, msg, senderPubHex)) {
     if (accounts[senderAddress]['balance'] < amount) {
       res.status(400).send({ message: "Not enough funds!" });
+    } else if (amount < 0) {
+      res.status(400).send({ message: "Nice try!" });
     } else {
       accounts[senderAddress]['nonce'] += 1;
       accounts[senderAddress]['balance']  -= amount;
