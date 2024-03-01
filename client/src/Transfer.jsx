@@ -1,9 +1,12 @@
 import { useState } from "react";
 import server from "./server";
+import * as secp from 'ethereum-cryptography/secp256k1'
 
-function Transfer({ address, setBalance }) {
+function Transfer({ address, setBalance, setNonce }) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [signature, setSignature] = useState("");
+  const [publicKey, setPublickKey] = useState("");
 
   const setValue = (setter) => (evt) => setter(evt.target.value);
 
@@ -12,13 +15,15 @@ function Transfer({ address, setBalance }) {
 
     try {
       const {
-        data: { balance },
+        data: { balance, nonce },
       } = await server.post(`send`, {
-        sender: address,
+        senderPubHex: publicKey,
         amount: parseInt(sendAmount),
-        recipient,
+        recipientAddress: recipient,
+        signature: signature
       });
       setBalance(balance);
+      setNonce(nonce);
     } catch (ex) {
       alert(ex.response.data.message);
     }
@@ -31,7 +36,7 @@ function Transfer({ address, setBalance }) {
       <label>
         Send Amount
         <input
-          placeholder="1, 2, 3..."
+          placeholder="Amount to Send"
           value={sendAmount}
           onChange={setValue(setSendAmount)}
         ></input>
@@ -40,9 +45,28 @@ function Transfer({ address, setBalance }) {
       <label>
         Recipient
         <input
-          placeholder="Type an address, for example: 0x2"
+          placeholder="Recipient's Address"
           value={recipient}
           onChange={setValue(setRecipient)}
+        ></input>
+
+      </label>
+
+      <label>
+        Public Key
+        <input
+          placeholder="Sender's Public Key"
+          value={publicKey}
+          onChange={setValue(setPublickKey)}
+        ></input>
+      </label>
+
+      <label>
+        Signature
+        <input
+          placeholder="Transaction Signature"
+          value={signature}
+          onChange={setValue(setSignature)}
         ></input>
       </label>
 
